@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Traffic Monitor</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #mapf {
+      height: 33%;
+      margin: 3px;
+    }
+    
+    #mapg {
+      height: 33%;
+      margin: 3px;
+    }
+    
+    #maph {
+      height: 34%;
+      margin: 3px;
+    }
+  </style>
+</head>
+<body>
+  
+  <div width="50%" id="mapf"></div>
+  <div width="50%"  id="mapg"></div>
+  <div width="50%"  id="maph"></div>
+
+  <script>
+
+  /**
+    View traffic conditions at multiple junctions in a single frame
+  */
+
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById('mapf'), {
+        zoom: 15,
+        center: {lat: 12.9164922, lng: 77.6204839}  // Traffic hot point  - For eg. Silk Board
+      });
+
+
+      var map2 = new google.maps.Map(document.getElementById('mapg'), {
+        zoom: 15,
+        center: {lat: 12.9567954, lng: 77.6852486} // Traffic hot point  - For eg. Marathalli
+      });
+      
+      var map3 = new google.maps.Map(document.getElementById('maph'), {
+        zoom: 15,
+        center: {lat: 12.9164922, lng: 77.6204839}  // Traffic hot point  - For eg. Silk Board
+      });
+      
+      var trafficLayer = new google.maps.TrafficLayer();
+      trafficLayer.setMap(map);
+      
+      var trafficLayer1 = new google.maps.TrafficLayer();
+      trafficLayer1.setMap(map2);
+      
+      var trafficLayer2 = new google.maps.TrafficLayer();
+      trafficLayer2.setMap(map3);
+      
+      var origin = new google.maps.LatLng( 12.9601512,77.6463073 ); //  Starting point of your regular journey
+      var destination =new google.maps.LatLng( 12.9567954,77.6852486 ); // Your destination
+
+      var directionsService = new google.maps.DirectionsService();
+
+      var hometooffice;
+      var officetohome;
+
+      var request1 = {
+    origin: origin, // LatLng|string
+    destination: destination, // LatLng|string
+    travelMode: google.maps.DirectionsTravelMode.DRIVING
+  };
+
+  var request2 = {
+    origin: destination, // LatLng|string
+    destination: origin, // LatLng|string
+    travelMode: google.maps.DirectionsTravelMode.DRIVING
+  };
+
+  directionsService.route( request1, function( response, status ) {
+    if ( status === 'OK' ) {
+      var hometooffice = response.routes[ 0 ].legs[ 0 ];
+      console.log(hometooffice.duration.text);
+      alert("Duration Home to Office " + hometooffice.duration.text);
+
+    }
+  } );
+
+  directionsService.route( request2, function( response, status ) {
+    if ( status === 'OK' ) {
+      var officetohome = response.routes[ 0 ].legs[ 0 ];
+      console.log(officetohome.duration.text);
+      alert("Duration Office to Home " + officetohome.duration.text);
+      }
+    } );
+}
+
+addEventListener("click", function() {
+    var
+          el = document.documentElement
+        , rfs =
+               el.requestFullScreen
+            || el.webkitRequestFullScreen
+            || el.mozRequestFullScreen
+    ;
+    rfs.call(el);
+});
+
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+</script>
+</body>
+</html>
